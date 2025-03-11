@@ -1,0 +1,28 @@
+services:
+  projectmanagement:
+    container_name: projectmanagement
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      -  PG_USER=postgres
+      - PG_PASSWORD=postgres
+      - PG_DB=postgres
+      - PG_HOST=projects_db
+      - PG_PORT=5432
+    depends_on:
+      - projects_db
+  projects_db:
+    container_name: projects_db
+    image: postgres:12
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: { }
