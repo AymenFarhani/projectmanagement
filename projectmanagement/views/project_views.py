@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from ..models import Project
 from ..serializers import ProjectSerializer
-
+import openpyxl
 
 # the controller class
 
@@ -47,3 +47,31 @@ def deleteProject(request, pk):
     project = Project.objects.get(pk=pk)
     project.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+#export all projects in excel format
+def get(self, request, *args, **kwargs):
+    projects = Project.objects.all()
+
+    # Create a new Excel workbook and add a worksheet
+    workBook = openpyxl.Workbook()
+    sheet = workBook.active
+    sheet.title = 'Projects'
+
+    # Define header
+    sheet.append(['ID', 'Title', 'Start Date', 'Contributors'])
+
+    # Add project data to the Excel sheet
+    for project in projects:
+        contributors = ", ".join([str(contributor) for contributor in project.contributors.all()])
+        sheet.append([project.id, project.title, project.startDate, contributors])
+
+    # Prepare the response for file download
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response['Content-Disposition'] = 'attachment; filename=projects.xlsx'
+
+    # Save the workbook to the response
+    workBook.save(response)
+
+    return response

@@ -10,7 +10,6 @@ services:
       - PG_DB=postgres
       - PG_HOST=projects_db
       - PG_PORT=5432
-      - LANG=C.UTF-8
     depends_on:
       - projects_db
   projects_db:
@@ -20,6 +19,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+      - POSTGRES_INITDB_ARGS="--encoding=UTF8"
     ports:
       - "5432:5432"
     volumes:
