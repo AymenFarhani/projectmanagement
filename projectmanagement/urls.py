@@ -15,4 +15,7 @@ urlpatterns = [
     path('contributors/create/', views.createContributor, name="createContributor"),
     path('contributors/update/<int:pk>/', views.updateContributor, name="updateContributor"),
     path('contributors/delete/<int:pk>/', views.deleteContributor, name="deleteContributor"),
+
+    path('register/', RegisterContributorView.as_view(), name='register'),
+    path('login/', LoginContributorView.as_view(), name='login'),
 ]

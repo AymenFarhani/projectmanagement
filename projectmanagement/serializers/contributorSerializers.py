@@ -1,3 +1,4 @@
+from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 
 from projectmanagement.models import Contributor, Address
@@ -6,6 +7,13 @@ from projectmanagement.serializers.addressSerializers import AddressSerializer
 
 class ContributorSerializer(serializers.ModelSerializer):
     address = AddressSerializer()
+
+    """Serializer for Contributor registration"""
+    password = serializers.CharField(write_only=True)
+
+    def create(self, validated_data):
+        validated_data['password'] = make_password(validated_data['password'])  # Hash password
+        return super().create(validated_data)
 
     class Meta:
         model = Contributor
