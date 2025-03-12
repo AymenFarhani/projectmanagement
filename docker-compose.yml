@@ -10,6 +10,7 @@ services:
       - PG_DB=postgres
       - PG_HOST=projects_db
       - PG_PORT=5432
+      - LANG=C.UTF-8
     depends_on:
       - projects_db
   projects_db:

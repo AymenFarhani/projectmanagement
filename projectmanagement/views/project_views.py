@@ -1,8 +1,9 @@
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from .models import Project
-from .serializers import ProjectSerializer
+from ..models import Project
+from ..serializers import ProjectSerializer
+
 
 # the controller class
 
@@ -16,7 +17,7 @@ def getProjects(request):
 
 #get single project by Id
 @api_view(['GET'])
-def getProject(request, pk):
+def getProject(request,pk):
     project = Project.objects.get(pk=pk)
     serializer = ProjectSerializer(project)
     return Response(serializer.data)
