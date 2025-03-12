@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponse
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -5,36 +7,40 @@ from ..models import Project
 from ..serializers import ProjectSerializer
 import openpyxl
 
-# the controller class
+# The controller class
 
 
 #Get all projects
 @api_view(['GET'])
+@login_required
 def getProjects(request):
     projects = Project.objects.all()
     serializer = ProjectSerializer(projects, many=True)
     return Response(serializer.data)
 
-#get single project by Id
+#get single project by title
 @api_view(['GET'])
-def getProject(request,pk):
-    project = Project.objects.get(pk=pk)
+@login_required
+def getProject(request,title):
+    project = Project.objects.get(title=title)
     serializer = ProjectSerializer(project)
     return Response(serializer.data)
 
 #create project
 @api_view(['POST'])
+@login_required
 def createProject(request):
     serializer = ProjectSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-@api_view(['PUT'])
 
 #update project by Id
-def updateProject(request, pk):
-    project = Project.objects.get(pk=pk)
+@api_view(['PUT'])
+@login_required
+def updateProject(request, title):
+    project = Project.objects.get(title=title)
     serializer = ProjectSerializer(project, data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -43,8 +49,9 @@ def updateProject(request, pk):
 
 #delete project by Id
 @api_view(['DELETE'])
-def deleteProject(request, pk):
-    project = Project.objects.get(pk=pk)
+@login_required
+def deleteProject(request, title):
+    project = Project.objects.get(title=title)
     project.delete()
     return Response(status=status.HTTP_204_NO_CONTENT)
 

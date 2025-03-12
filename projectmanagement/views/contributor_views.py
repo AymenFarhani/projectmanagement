@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
@@ -7,6 +8,7 @@ from ..serializers import ContributorSerializer
 
 # Get all contributors
 @api_view(['GET'])
+@login_required
 def getContributors(request):
     contributors = Contributor.objects.all()
     serializer = ContributorSerializer(contributors, many=True)
@@ -15,9 +17,10 @@ def getContributors(request):
 
 # Get a single contributor by ID
 @api_view(['GET'])
-def getContributor(request, pk):
+@login_required
+def getContributor(request, email):
     try:
-        contributor = Contributor.objects.get(pk=pk)
+        contributor = Contributor.objects.get(email=email)
     except Contributor.DoesNotExist:
         return Response({'error': 'Contributor not found'}, status=status.HTTP_404_NOT_FOUND)
 
@@ -27,6 +30,7 @@ def getContributor(request, pk):
 
 # Create a new contributor
 @api_view(['POST'])
+@login_required
 def createContributor(request):
     serializer = ContributorSerializer(data=request.data)
     if serializer.is_valid():
@@ -37,6 +41,7 @@ def createContributor(request):
 
 # Update a contributor by ID
 @api_view(['PUT'])
+@login_required
 def updateContributor(request, pk):
     try:
         contributor = Contributor.objects.get(pk=pk)
@@ -52,9 +57,10 @@ def updateContributor(request, pk):
 
 # Delete a contributor by ID
 @api_view(['DELETE'])
-def deleteContributor(request, pk):
+@login_required
+def deleteContributor(request, email):
     try:
-        contributor = Contributor.objects.get(pk=pk)
+        contributor = Contributor.objects.get(email=email)
     except Contributor.DoesNotExist:
         return Response({'error': 'Contributor not found'}, status=status.HTTP_404_NOT_FOUND)
 
